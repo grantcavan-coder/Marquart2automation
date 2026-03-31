@@ -11,7 +11,7 @@ st.markdown("Upload your raw car list CSV and get back a ranked Excel file — a
 
 st.markdown("---")
 
-uploaded_file = st.file_uploader("📂 Upload your CSV file", type=["csv"])
+uploaded_file = st.file_uploader("📂 Upload your CSV file or xlsx files", type=["csv", "xlsx"])
 
 if uploaded_file:
     st.success(f"Uploaded: **{uploaded_file.name}**")
@@ -20,7 +20,9 @@ if uploaded_file:
         with st.spinner("Processing..."):
             try:
                 # Save upload to temp file
-                with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as tmp_in:
+
+                suffix = '.xlsx' if uploaded_file.name.endswith('.xlsx') else '.csv'
+                with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp_in:
                     tmp_in.write(uploaded_file.getvalue())
                     input_path = tmp_in.name
 
@@ -39,13 +41,14 @@ if uploaded_file:
 
                 # Download button
                 with open(output_path, 'rb') as f:
+                
                     st.download_button(
                         label="📥 Download Ranked Excel File",
                         data=f,
                         file_name="ranked_cars.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                         type="primary"
-                    )
+                        )
 
                 # Cleanup
                 os.unlink(input_path)
