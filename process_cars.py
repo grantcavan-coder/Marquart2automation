@@ -24,8 +24,12 @@ def percentrank(values, x):
     return below / (n - 1)
 
 def process_file(input_path, output_path):
-    df = pd.read_csv(input_path, on_bad_lines='skip')
-    df = df.dropna(how='all').reset_index(drop=True)
+    if input_path.endswith('.xlsx'):
+        df = pd.read_excel(input_path, engine='openpyxl')
+    else:
+        df = pd.read_csv(input_path, on_bad_lines='skip')
+    
+    df = df.astype({col: 'object' for col in df.select_dtypes(include='string').columns})
 
     df['Price_clean'] = df['Price'].apply(clean_price)
     df['Odometer_clean'] = df['Odometer'].apply(clean_odometer)
@@ -107,6 +111,14 @@ def process_file(input_path, output_path):
     ws.freeze_panes = 'A2'
     wb.save(output_path)
     return df
+
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) < 3:
+        print("Usage: python process_cars.py input.csv output.xlsx")
+    else:
+        process_file(sys.argv[1], sys.argv[2])
 
 
 if __name__ == '__main__':
