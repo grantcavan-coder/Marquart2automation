@@ -119,11 +119,3 @@ if __name__ == '__main__':
         print("Usage: python process_cars.py input.csv output.xlsx")
     else:
         process_file(sys.argv[1], sys.argv[2])
-
-
-if __name__ == '__main__':
-    import sys
-    if len(sys.argv) < 3:
-        print("Usage: python process_cars.py input.csv output.xlsx")
-    else:
-        process_file(sys.argv[1], sys.argv[2])
